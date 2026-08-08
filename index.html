@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>DAYS2GO</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+	
+	
+	   <link rel="icon" type="image/png" href="images/favi.png">
+	
+		<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="DAYS2GO">
+
+<link rel="apple-touch-icon" href="./images/icon.svg">
+
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#000000">
+
+<link rel="manifest" href="manifest.json">
+	
+	
+	
+</head>
+<body>
+
+    <!-- ====== MAIN SCREEN (Default View) ====== -->
+    <div class="main-screen" id="mainScreen">
+        <div class="main-content" id="mainContent">
+            <!-- Before any events added -->
+            <div class="welcome-state" id="welcomeState">
+                <i class="fas fa-calendar-plus welcome-icon"></i>
+                <p class="welcome-text">Tap the menu to add your first event</p>
+                <button class="welcome-btn" id="welcomeMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <!-- After events exist - clean countdown -->
+            <div class="countdown-display hidden" id="countdownDisplay">
+                <div class="countdown-number" id="daysLeftNumber">0</div>
+                <div class="countdown-label">Days To Go</div>
+                <div class="progress-wrapper">
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-info">
+                        <span id="progressCompleted">0</span> / <span id="progressTotal">0</span> completed
+                    </div>
+                </div>
+                <div class="countdown-sub" id="countdownSub"></div>
+            </div>
+        </div>
+
+        <!-- Floating menu button - hidden after events added, tap screen to show -->
+        <button class="fab-menu" id="fabMenu">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+
+    <!-- ====== SIDE PANEL ====== -->
+    <div class="panel-overlay" id="panelOverlay"></div>
+    <div class="side-panel" id="sidePanel">
+        <div class="panel-header">
+            <h2 class="panel-title">
+                <i class="fas fa-calendar-days"></i>
+                My Events
+            </h2>
+            <button class="panel-close" id="panelClose">
+                <i class="fas fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- Panel Actions -->
+        <div class="panel-actions">
+            <button class="panel-action-btn" id="addEventBtn">
+                <i class="fas fa-plus"></i>
+                <span>Add Event</span>
+            </button>
+            <button class="panel-action-btn" id="bulkAddBtn">
+                <i class="fas fa-layer-group"></i>
+                <span>Bulk Add</span>
+            </button>
+            <button class="panel-action-btn danger-action" id="clearAllBtn">
+                <i class="fas fa-trash-can"></i>
+                <span>Clear All</span>
+            </button>
+        </div>
+
+        <!-- Events List -->
+        <div class="panel-events" id="panelEvents">
+            <div class="panel-empty" id="panelEmpty">
+                <i class="fas fa-inbox"></i>
+                <p>No events added yet</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== ADD / EDIT EVENT MODAL ====== -->
+    <div class="modal-overlay" id="eventModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">
+                    <i class="fas fa-plus-circle"></i>
+                    Add Event
+                </h3>
+                <button class="modal-close-btn" id="modalCloseBtn">
+                    <i class="fas fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="field">
+                    <label><i class="fas fa-tag"></i></label>
+                    <input type="text" id="inputName" placeholder="Event name..." autocomplete="off">
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-calendar"></i></label>
+                    <input type="date" id="inputDate">
+                </div>
+                <button class="modal-save" id="modalSave">
+                    <i class="fas fa-check"></i>
+                    Save
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== BULK ADD MODAL ====== -->
+    <div class="modal-overlay" id="bulkModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>
+                    <i class="fas fa-layer-group"></i>
+                    Bulk Add
+                </h3>
+                <button class="modal-close-btn" id="bulkCloseBtn">
+                    <i class="fas fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="field">
+                    <label><i class="fas fa-tag"></i></label>
+                    <input type="text" id="bulkPrefix" placeholder="Name prefix (e.g. Day)" value="Day" autocomplete="off">
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-calendar"></i></label>
+                    <input type="date" id="bulkStartDate">
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-hashtag"></i></label>
+                    <input type="number" id="bulkCount" placeholder="How many days?" min="1" max="100" value="20">
+                </div>
+                <p class="field-hint">
+                    <i class="fas fa-info-circle"></i>
+                    Creates consecutive daily events
+                </p>
+                <button class="modal-save" id="bulkSave">
+                    <i class="fas fa-check"></i>
+                    Create Events
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== CONFIRM DIALOG ====== -->
+    <div class="modal-overlay" id="confirmDialog">
+        <div class="modal confirm">
+            <div class="confirm-icon">
+                <i class="fas fa-triangle-exclamation"></i>
+            </div>
+            <p class="confirm-msg" id="confirmMsg">Are you sure?</p>
+            <div class="confirm-btns">
+                <button class="confirm-no" id="confirmNo">
+                    <i class="fas fa-xmark"></i> Cancel
+                </button>
+                <button class="confirm-yes" id="confirmYes">
+                    <i class="fas fa-check"></i> Yes
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== TOAST ====== -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle" id="toastIcon"></i>
+        <span id="toastMsg">Done</span>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
